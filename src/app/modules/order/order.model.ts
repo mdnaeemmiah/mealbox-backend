@@ -1,27 +1,94 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { IOrder } from './order.interface';
+import { model, Schema } from "mongoose";
+import { IOrder } from "./order.interface";
 
-// Define the Order schema
-const OrderSchema: Schema = new Schema(
+
+// const OrderSchema = new Schema<IOrder>(
+//   {
+
+//     user: {
+//       type: Schema.Types.ObjectId,
+//       ref: "Customer",
+//     },
+//     products: [
+//       {
+//         product: {
+//           type: Schema.Types.ObjectId,
+//           ref: "MealProviderModel",
+//           required: true,
+//         },
+//         quantity: {
+//           type: Number,
+//           required: true,
+//         },
+//       },
+//     ],
+//     totalPrice: {
+//       type: Number,
+//       required: true,
+//     },
+//     status: {
+//       type: String,
+//       enum: ["Pending", "Paid", "Shipped", "Completed", "Cancelled"],
+//       default: "Pending",
+//     },
+//     transaction: {
+//       id: String,
+//       transactionStatus: String,
+//       bank_status: String,
+//       sp_code: String,
+//       sp_message: String,
+//       method: String,
+//       date_time: String,
+//     },
+//   },
+//   {
+//     timestamps: true,
+//   }
+// );
+
+const OrderSchema = new Schema<IOrder>(
   {
-    id: { type: String, required: true, unique: true }, // Unique identifier for the order
-    mealSelection: { type: [String], required: true }, // Array of selected meals
-    dietaryPreferences: { type: [String], required: true }, // Array of dietary preferences
-    customerId: { type: String, required: true }, // Customer ID who placed the order
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "Customer",
+    },
+    products: [
+      {
+        product: {
+          type: Schema.Types.ObjectId,
+          ref: "MealProvider",
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
     status: {
       type: String,
-      enum: ['pending', 'in progress', 'delivered'],
-      default: 'pending', // Default status is pending
+      enum: ["Pending", "Paid", "Shipped", "Completed", "Cancelled"],
+      default: "Pending",
     },
-    orderDate: { type: Date, required: true, default: Date.now }, // Date when the order was placed
-    deliveryDate: { type: Date }, // Optional: Date when the order was delivered
+    transaction: {
+      id: String,
+      transactionStatus: String,
+      bank_status: String,
+      sp_code: String,
+      sp_message: String,
+      method: String,
+      date_time: String,
+    },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
+    timestamps: true,
   }
 );
 
-// Create the Order model
-const OrderModel = mongoose.model<IOrder & Document>('Order', OrderSchema);
+const Order = model<IOrder>("Order", OrderSchema);
 
-export default OrderModel;
+export default Order;

@@ -80,6 +80,7 @@ createMealProvider: async (data: any) => {
     if (!mongoose.Types.ObjectId.isValid(mealProviderId)) {
       throw new AppError(400, 'Invalid meal provider ID');
     }
+    console.log(mealProviderId)
 
     try {
       const deletedMealProvider = await MealProviderModel.findByIdAndDelete(mealProviderId);
@@ -93,4 +94,6 @@ createMealProvider: async (data: any) => {
       throw new AppError(500, 'Error deleting meal provider');
     }
   },
+
+  
 };

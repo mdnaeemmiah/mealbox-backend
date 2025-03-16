@@ -10,7 +10,7 @@ mealProviderRouter.get('/', mealProviderController.getMealProviders);
 mealProviderRouter.get('/:mealProviderId', mealProviderController.getSingleMealProvider);
 
 // Route to create a new meal provider
-mealProviderRouter.post('/', mealProviderController.createMealProvider);
+mealProviderRouter.post('/create', mealProviderController.createMealProvider);
 
 // Route to update an existing meal provider by ID
 mealProviderRouter.put('/:id', mealProviderController.updateMealProvider);

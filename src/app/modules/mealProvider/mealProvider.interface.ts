@@ -3,10 +3,7 @@ export interface IMealProvider {
     name: string; // Name of the meal provider
     cuisineSpecialties: string[]; // Array of cuisine specialties (e.g., Italian, Chinese, etc.)
     availableMealOptions: string[]; // Array of available meal options (e.g., vegetarian, vegan, gluten-free, etc.)
-    pricing: {
-      priceRange: string; // Price range (e.g., "$10-$30", "Affordable", "Premium")
-      perServing: number; // Price per serving (if applicable)
-    };
+    pricing:number;
     experience: number; // Years of experience in the food industry
     customerReviews: {
       rating: number; // Average rating out of 5

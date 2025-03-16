@@ -3,19 +3,28 @@ import { Model } from "mongoose";
 import { CUSTOMER_ROLE } from "./custumer.constant";
 
 
-export interface ICustomer {
-    name: string;
-    email: string;
-    password: string;
-    role: 'mealProvider' | 'customer' | 'admin';
-    phone?: string;
-    address?: string;
-    city?: string;
-    needsPasswordChange: boolean;
-    passwordChangedAt?: Date;
-    status: 'in-progress' | 'blocked';
-    isBlocked: boolean;           
-  }
+import { Document } from "mongoose";
+
+export interface IUser extends Document {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  method?: "credentials" | "github" | "google" | undefined; // Allow undefined
+  needsPasswordChange: boolean;
+  passwordChangedAt?: Date;
+  status: string;
+  isBlocked: boolean;
+}
+
+export interface ICustomer extends IUser {
+  phone?: string;
+  address?: string;
+  city?: string;
+  method?: "credentials" | "github" | "google"; // Explicitly define method
+}
+
   
 
   

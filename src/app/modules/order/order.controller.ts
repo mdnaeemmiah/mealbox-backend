@@ -1,104 +1,72 @@
-import { StatusCodes } from 'http-status-codes';
-import { Request, Response } from 'express';
-import mongoose from 'mongoose';
-import catchAsync from '../../../utils/catchAsync';
-import sendResponse from '../../../utils/sendResponse';
-import AppError from '../../../errors/AppError';
-import OrderModel from './order.model';
-import { orderService } from './order.service';
 
-// Get all orders
-const getOrders = catchAsync(async (req: Request, res: Response) => {
-  const result = await orderService.getOrders();
+import AppError from "../../../errors/AppError";
+import catchAsync from "../../../utils/catchAsync";
+import sendResponse from "../../../utils/sendResponse";
+import { IUser } from "../auth/auth.interface";
+import { orderService } from "./order.service";
+import httpStatus from "http-status";
 
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: 'Orders retrieved successfully',
-    data: result,
-  });
-});
+// const createOrder = catchAsync(async (req, res) => {
+//   const user = req.user;
+//   console.log(user)
 
-// Get a single order
-const getSingleOrder = catchAsync(async (req: Request, res: Response) => {
-  const orderId = req.params.orderId;
-  const result = await orderService.getSingleOrder(orderId);
+//   console.log(req.body);
+//   const order = await orderService.createOrder(user, req.body, req.ip!);
+//    console.log(order,'naeem')
+//   sendResponse(res, {
+//     statusCode: httpStatus.CREATED,
+//     success: true,
+//     message: "Order placed successfully",
+//     data: order,
+//   });
+// });
 
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: 'Order retrieved successfully',
-    data: result,
-  });
-});
 
-// Create a new order
-const createOrder = catchAsync(async (req: Request, res: Response) => {
-  const body = req.body;
+const createOrder = catchAsync(async (req, res) => {
+  const user = req.user as IUser; // Type assertion
+  // const { products } = req.body;
+  // console.log(req.id!)
+  // console.log({products})
 
-  // Log the incoming body to show the data that is being created
-  console.log('Received data for order creation:', body);
-
-  // Call the service to create the order
-  const newOrder = await orderService.createOrder(body);
-
-  // Log the created order (optional, to check the result)
-  console.log('Order created successfully:', newOrder);
-
-  // Send response back to the client
-  sendResponse(res, {
-    statusCode: StatusCodes.CREATED,
-    success: true,
-    message: 'Order created successfully',
-    data: newOrder,
-  });
-});
-
-// Update an order
-const updateOrder = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const body = req.body;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid order ID');
+  if (!user || !req.body) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Invalid request data");
   }
+ 
 
-  const updatedOrder = await orderService.updateOrder(id, body);
+  const order = await orderService.createOrder(user, req.body, req.ip!);
+
+//  console.log("req.ip!", req.ip!);
+ console.log(order)
 
   sendResponse(res, {
-    statusCode: StatusCodes.OK,
+    statusCode: httpStatus.CREATED,
     success: true,
-    message: 'Order updated successfully',
-    data: updatedOrder,
+    message: "Order placed successfully naeem",
+    data: order,
   });
 });
 
-// Delete an order
-const deleteOrder = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid order ID');
-  }
-
-  const deletedOrder = await OrderModel.findByIdAndDelete(id);
-
-  if (!deletedOrder) {
-    throw new AppError(StatusCodes.BAD_REQUEST, 'Order not found');
-  }
+const getOrders = catchAsync(async (req, res) => {
+  const order = await orderService.getOrders();
 
   sendResponse(res, {
+    statusCode: httpStatus.CREATED,
     success: true,
-    statusCode: StatusCodes.OK,
-    message: 'Order deleted successfully',
-    data: deletedOrder,
+    message: "Order retrieved successfully",
+    data: order,
   });
 });
 
-export const orderController = {
-  getOrders,
-  getSingleOrder,
-  createOrder,
-  updateOrder,
-  deleteOrder,
-};
+const verifyPayment = catchAsync(async (req, res) => {
+  const order = await orderService.verifyPayment(req.query.order_id as string);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Order verified successfully",
+    data: order,
+  });
+});
+
+export const orderController = { createOrder, verifyPayment, getOrders };

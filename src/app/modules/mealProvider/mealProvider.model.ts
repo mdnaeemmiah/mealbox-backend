@@ -9,10 +9,7 @@ const MealProviderSchema: Schema = new Schema(
     name: { type: String, required: true },
     cuisineSpecialties: { type: [String], required: true },
     availableMealOptions: { type: [String], required: true },
-    pricing: {
-      priceRange: { type: String, required: true },
-      perServing: { type: Number, required: true },
-    },
+    pricing: { type: Number, required: true, default: 0 },
     experience: { type: Number, required: true },
     customerReviews: {
       rating: { type: Number, required: true },

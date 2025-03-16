@@ -75,11 +75,13 @@ const updateMealProvider = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// Delete a meal provider
 const deleteMealProvider = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
+  
+  console.log('Received ID for deletion:', id); // Debugging log
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
+    console.error('Invalid ID format:', id);
     throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid meal provider ID');
   }
 
@@ -96,6 +98,7 @@ const deleteMealProvider = catchAsync(async (req: Request, res: Response) => {
     data: deletedMealProvider,
   });
 });
+
 
 export const mealProviderController = {
   getMealProviders,

@@ -6,10 +6,10 @@ export const MealProviderValidationSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
   cuisineSpecialties: z.array(z.string()).nonempty('Cuisine specialties cannot be empty'),
   availableMealOptions: z.array(z.string()).nonempty('Available meal options cannot be empty'),
-  pricing: z.object({
-    priceRange: z.string().min(1, 'Price range is required').max(255, 'Price range is too long'),
-    perServing: z.number().positive('Per serving price must be positive'),
-  }),
+  pricing:  z
+  .number({ required_error: "Pricing is required" }) // Ensures it's a number
+  .min(0, "Pricing must be at least 0") // Prevents negative values
+  .default(0),
   experience: z.number().int().positive('Experience must be a positive integer'),
   customerReviews: z.object({
     rating: z.number().min(0, 'Rating must be between 0 and 5').max(5, 'Rating must be between 0 and 5'),

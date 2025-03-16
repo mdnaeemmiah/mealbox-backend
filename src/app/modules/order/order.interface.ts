@@ -1,9 +1,22 @@
-export interface IOrder {
-    id: string; // Unique identifier for the order
-    mealSelection: string[]; // Array of selected meals (e.g., "Pizza", "Pasta", etc.)
-    dietaryPreferences: string[]; // Array of dietary preferences (e.g., "Vegan", "Gluten-Free", "No Dairy")
-    customerId: string; // Unique identifier for the customer placing the order
-    status: 'pending' | 'in progress' | 'delivered'; // The current status of the order
-    orderDate: Date; // The date when the order was placed
-    deliveryDate?: Date; // Optional: The date when the order was delivered (if applicable)
-  }
+import { Document, Types } from "mongoose";
+
+export interface IOrder extends Document {
+  user?: Types.ObjectId;
+  products: {
+    product: Types.ObjectId;
+    quantity: number;
+  }[];
+  totalPrice: number;
+  status: "Pending" | "Paid" | "Shipped" | "Completed" | "Cancelled";
+  transaction: {
+    id: string;
+    transactionStatus: string;
+    bank_status: string;
+    sp_code: string;
+    sp_message: string;
+    method: string;
+    date_time: string;
+  };
+  createdAt?: Date;
+  updatedAt?: Date;
+}
