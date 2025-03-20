@@ -50,7 +50,7 @@ const OrderSchema = new Schema<IOrder>(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: "Customer",
+      ref: "User",
     },
     products: [
       {

@@ -5,62 +5,90 @@ import AppError from "../../../errors/AppError";
 import MealProviderModel from "../mealProvider/mealProvider.model";
 import { IUser } from "../auth/auth.interface";
 
+
 // const createOrder = async (
 //   user: IUser,
 //   payload: { products: { product: string; quantity: number }[] },
 //   client_ip: string
 // ) => {
-//   if (!user) {
-//     throw new AppError(httpStatus.UNAUTHORIZED, "User not authenticated");
-//   }
-
 //   if (!payload?.products?.length) {
 //     throw new AppError(httpStatus.NOT_ACCEPTABLE, "Order is not specified");
 //   }
 
 //   const products = payload.products;
-//   let totalPrice = 0; 
+//   let totalPrice = 0;
 
 //   const productDetails = await Promise.all(
 //     products.map(async (item) => {
-//       const product = await MealProviderModel.findById(item.product);
-//       if (product) {
-//         const subtotal = product ? (product.pricing || 0) * item.quantity : 0;
-//         totalPrice += subtotal;
-//         return item;
+//       if (!item.product) {
+//         throw new AppError(httpStatus.BAD_REQUEST, "Product is required");
 //       }
+
+//       const product = await MealProviderModel.findById(item.product);
+
+//       if (!product) {
+//         throw new AppError(httpStatus.NOT_FOUND, `Product with ID ${item.product} not found`);
+//       }
+
+//       const subtotal = (product.pricing || 0) * item.quantity;
+//       totalPrice += subtotal;
+
+//       return {
+//         product: product._id,
+//         quantity: item.quantity,
+//       };
 //     })
 //   );
 
-//   // Creating the order
-//   let order = await Order.create({
-//     user: user._id,  // Ensure user._id is passed correctly
-//     products: productDetails,
+//   const validProductDetails = productDetails.filter((item) => item !== null);
+
+//   if (!validProductDetails.length) {
+//     throw new AppError(httpStatus.NOT_ACCEPTABLE, "No valid products found");
+//   }
+
+//   const order = await Order.create({
+//     user,
+//     products: validProductDetails,
 //     totalPrice,
 //   });
 
-//   // Payment integration
+//   // Ensure the required fields are included
 //   const shurjopayPayload = {
 //     amount: totalPrice,
 //     order_id: order._id,
 //     currency: "BDT",
 //     customer_name: user.name,
-//     customer_address: user.address,
 //     customer_email: user.email,
-//     customer_phone: user.phone,
-//     customer_city: user.city,
 //     client_ip,
+//     customer_address: user.address,  // Ensure user has an address
+//     customer_phone: user.phone,      // Ensure user has a phone
+//     customer_city: user.city,        // Ensure user has a city
 //   };
 
-//   const payment = await orderUtils.makePaymentAsync(shurjopayPayload);
+//   const payment = await orderUtils.makePaymentAsync(shurjopayPayload).catch((err) => {
+//     console.error("Payment Error:", err);
+//     throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Payment failed");
+//   });
 
-//   if (payment?.transactionStatus) {
-//     order = await order.updateOne({
-//       transaction: {
-//         id: payment.sp_order_id,
-//         transactionStatus: payment.transactionStatus,
-//       },
-//     });
+//   // console.log("Payment Response:", payment);
+
+//   if (!payment?.checkout_url) {
+//     // console.error("Payment did not return a checkout URL", payment);
+//     throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Payment did not return a checkout URL");
+//   }
+
+//   if (payment.transactionStatus) {
+//     await Order.updateOne(
+//       { _id: order._id },
+//       {
+//         $set: {
+//           transaction: {
+//             id: payment.sp_order_id,
+//             transactionStatus: payment.transactionStatus,
+//           },
+//         },
+//       }
+//     );
 //   }
 
 //   return payment.checkout_url;
