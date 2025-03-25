@@ -3,6 +3,8 @@ import authRouter from '../app/modules/auth/auth.route';
 import mealProviderRouter from '../app/modules/mealProvider/mealProvider.route';
 import postPreferenceRouter from '../app/modules/PostPreference/postPreference.route';
 import orderRouter from '../app/modules/order/order.route';
+import messageRoute from '../app/modules/message/message.route';
+import userRouter from '../app/modules/user/user.route';
 
 
 
@@ -24,6 +26,14 @@ const moduleRoutes = [
     {
       path: '/order',
       route: orderRouter,
+    },
+    {
+      path: '/message',
+      route: messageRoute,
+    },
+    {
+      path: '/user',
+      route: userRouter,
     },
 ];
 

@@ -1,8 +1,7 @@
 
-import AppError from "../../../errors/AppError";
+
 import catchAsync from "../../../utils/catchAsync";
 import sendResponse from "../../../utils/sendResponse";
-import { IUser } from "../auth/auth.interface";
 import { orderService } from "./order.service";
 import httpStatus from "http-status";
 

@@ -18,58 +18,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const order_utils_1 = require("./order.utils");
 const AppError_1 = __importDefault(require("../../../errors/AppError"));
 const mealProvider_model_1 = __importDefault(require("../mealProvider/mealProvider.model"));
-// const createOrder = async (
-//   user: IUser,
-//   payload: { products: { product: string; quantity: number }[] },
-//   client_ip: string
-// ) => {
-//   if (!user) {
-//     throw new AppError(httpStatus.UNAUTHORIZED, "User not authenticated");
-//   }
-//   if (!payload?.products?.length) {
-//     throw new AppError(httpStatus.NOT_ACCEPTABLE, "Order is not specified");
-//   }
-//   const products = payload.products;
-//   let totalPrice = 0; 
-//   const productDetails = await Promise.all(
-//     products.map(async (item) => {
-//       const product = await MealProviderModel.findById(item.product);
-//       if (product) {
-//         const subtotal = product ? (product.pricing || 0) * item.quantity : 0;
-//         totalPrice += subtotal;
-//         return item;
-//       }
-//     })
-//   );
-//   // Creating the order
-//   let order = await Order.create({
-//     user: user._id,  // Ensure user._id is passed correctly
-//     products: productDetails,
-//     totalPrice,
-//   });
-//   // Payment integration
-//   const shurjopayPayload = {
-//     amount: totalPrice,
-//     order_id: order._id,
-//     currency: "BDT",
-//     customer_name: user.name,
-//     customer_address: user.address,
-//     customer_email: user.email,
-//     customer_phone: user.phone,
-//     customer_city: user.city,
-//     client_ip,
-//   };
-//   const payment = await orderUtils.makePaymentAsync(shurjopayPayload);
-//   if (payment?.transactionStatus) {
-//     order = await order.updateOne({
-//       transaction: {
-//         id: payment.sp_order_id,
-//         transactionStatus: payment.transactionStatus,
-//       },
-//     });
-//   }
-//   return payment.checkout_url;
-// };
+// import { IUser } from "../auth/auth.interface";
 const createOrder = (user, payload, client_ip) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     // Validate user

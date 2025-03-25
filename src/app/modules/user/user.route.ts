@@ -1,18 +1,3 @@
-// import express from "express";
-// import * as userController from "./user.controller";
-
-
-// const router = express.Router();
-
-// router.get("/",  userController.getUsers);
-// router.get("/:id",userController.singleUser);
-// // router.put("/profile/:userId",userController.updateProfile);
-// router.put("/:id",  userController.updateRole);
-// router.delete("/:id",  userController.removeUser);
-
-// export const userRoutes = router;
-
-
 
 
 import { Router } from 'express'

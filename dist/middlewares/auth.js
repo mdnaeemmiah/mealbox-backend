@@ -23,37 +23,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const http_status_1 = __importDefault(require("http-status"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const AppError_1 = __importDefault(require("../errors/AppError"));
-const config_1 = __importDefault(require("../app/config"));
 const catchAsync_1 = __importDefault(require("../utils/catchAsync"));
-const auth_model_1 = require("../app/modules/auth/auth.model");
+const config_1 = __importDefault(require("../app/config"));
+const user_model_1 = require("../app/modules/user/user.model");
 const auth = (...requiredRoles) => {
     return (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        var _a;
-        const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1]; // Get token after "Bearer"
-        // Checking if the token is missing
+        const token = req.headers.authorization;
+        // checking if the token is missing
         if (!token) {
             throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, "You are not authorized!");
         }
-        try {
-            // Checking if the given token is valid
-            const decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_secret);
-            const { role, email } = decoded;
-            console.log("Decoded JWT:", decoded); // Log the decoded JWT payload
-            // Check if user exists in the database
-            const user = yield auth_model_1.User.findOne({ email }); // Ensure you are using the correct model
-            if (!user) {
-                throw new AppError_1.default(http_status_1.default.NOT_FOUND, "This user is not found !");
-            }
-            if (requiredRoles.length > 0 && !requiredRoles.includes(role)) {
-                throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, "You are not authorized to access this resource.");
-            }
-            req.user = user; // Attach user to the request object
-            next();
+        // checking if the given token is valid
+        const decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_secret);
+        const { role, email, iat } = decoded;
+        // checking if the user is exist
+        const user = yield user_model_1.User.findOne({ email });
+        if (!user) {
+            throw new AppError_1.default(http_status_1.default.NOT_FOUND, "This user is not found !");
         }
-        catch (error) {
-            console.error("JWT verification error:", error);
-            throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, "Invalid or expired token");
+        if (requiredRoles && !requiredRoles.includes(role)) {
+            throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, "You are not authorized  hi!");
         }
+        req.user = user;
+        next();
     }));
 };
 exports.default = auth;

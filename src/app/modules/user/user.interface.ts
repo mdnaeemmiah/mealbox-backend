@@ -15,6 +15,7 @@ import { USER_ROLE } from "./user.contant";
 
 
 export interface IUser {
+    [x: string]: any  | undefined;
     name: string;
     email: string;
     password: string;
